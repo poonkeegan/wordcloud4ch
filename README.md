@@ -1,6 +1,6 @@
 # wordcloud4ch
 
-FIXME: description
+Generate a word cloud of the most common terms from any 4chan board
 
 ## Installation
 
