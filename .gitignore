@@ -11,3 +11,4 @@ pom.xml.asc
 .nrepl-history
 .hgignore
 .hg/
+*.png

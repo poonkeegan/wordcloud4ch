@@ -8,12 +8,12 @@
   (:import (java.awt Dimension Color)
            (net.htmlparser.jericho Source TextExtractor)
            (com.kennycason.kumo WordCloud WordFrequency CollisionMode)
-           (com.kennycason.kumo.bg CircleBackground)
+           (com.kennycason.kumo.bg PixelBoundryBackground)
            (com.kennycason.kumo.palette ColorPalette)
            (com.kennycason.kumo.font KumoFont FontWeight)
-           (com.kennycason.kumo.font.scale SqrtFontScalar)))
+           (com.kennycason.kumo.font.scale LinearFontScalar)))
 
-(def board "a")
+(def board "g")
 
 (def stopwords
   (-> "stopwords.txt"
@@ -33,7 +33,7 @@
       (api/req {:board board})
       (parse/threadnums)))
 
-(defn comments [threads]
+(defn comments [board threads]
   (->> threads
        (map #(api/req :thread {:board board :number %}))
        (map :posts)
@@ -64,32 +64,32 @@
 (defn strip-punc [string]
   (str/replace string #"\A\W*(.*\w)(\W)*\z" "$1"))
 
-(def a (->> "a"
-            (threads)
-            (comments)
-            (words)
-            (filter #(not (re-matches #"\W*" %)))
-            (map strip-punc)
-            (freq)
-            (filter wordpredicate)
-            (sort-by second)))
-
-(def dims (Dimension. 500 312))
-
-(defn -main
-  [& args]
-  (let [wordFreq (map (fn [[hd tl]] (WordFrequency. hd tl)) a)
-        dims (Dimension. 500 312)
+(defn generate-wc [board]
+  (let [a (->> board
+               (threads)
+               (comments board)
+               (words)
+               (filter #(not (re-matches #"\W*" %)))
+               (map strip-punc)
+               (freq)
+               (filter wordpredicate)
+               (sort-by second #(compare %2 %1)))
+        wordFreq (map (fn [[hd tl]] (WordFrequency. hd tl)) a)
+        dims (Dimension. 400 600)
         wc (WordCloud. dims CollisionMode/PIXEL_PERFECT)]
     (doto wc
       (.setPadding 2)
-      (.setBackground (CircleBackground. 300))
+      (.setBackground (PixelBoundryBackground. "resources/gnome.png"))
       (.setColorPalette (ColorPalette. [(Color. 0x4055F1)
                                         (Color. 0x408DF1)
                                         (Color. 0x40AAF1)
                                         (Color. 0x40C5F1)
                                         (Color. 0x40D3F1)
                                         (Color. 0xFFFFFF)]))
-      (.setFontScalar (SqrtFontScalar. 10 40))
+      (.setFontScalar (LinearFontScalar. 10 40))
       (.build wordFreq)
-      (.writeToFile "test.png"))))
+      (.writeToFile (str board ".png")))))
+
+(defn -main
+  [& args]
+  (generate-wc "g"))
