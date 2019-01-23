@@ -1,32 +1,30 @@
 # wordcloud4ch
 
 Generate a word cloud of the most common terms from any 4chan board
+This is done by checking the boards using the json api filtering the
+comment words and passing it to the kumo word cloud generator
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Just download the repo
+
+```
+git clone https://github.com/poonkeegan/wordcloud4ch.git
+```
 
 ## Usage
 
-FIXME: explanation
-
-    $ java -jar wordcloud4ch-0.1.0-standalone.jar [args]
+Run the program with leiningein using `lein run` or 
+package and run the jar
 
 ## Options
 
-FIXME: listing of options this app accepts.
+TODO: add args to select board and 
 
 ## Examples
 
-...
 
 ### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
 
 ## License
 
